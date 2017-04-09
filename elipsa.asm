@@ -54,7 +54,7 @@
 #Output with the excess
 	li $v0, 1
 	add $a0, $s2, $zero
-	syscall #PÓKI CO DZIAŁA
+	syscall #PÓKI CO DZIA�?A
 
 #Preparing the header
 	la $t0, header		#t0 is now 56bit
@@ -113,7 +113,7 @@
 #$t8 - delta_B
 
 	move $t0, $s6	#x0
-	move $t1, $s7 #y0
+	move $t1, $s7	#y0
 
 	mul $t2, $t0, $t0 #a2 = a * a
 	mul $t3, $t1, $t1 #b2 = b * b
@@ -130,76 +130,84 @@
 	sll $t4, $t4, 1	#8 * b * a2
 	sub $t8, $t7, $t4
 	add $t8, $t8, $t2
+	add $t8, $t8, $t2
+	add $t8, $t8, $t2
 	add $t8, $t8, $t2	#delta_B = 4 * (3 * b2 - 2 * b * a2 + 2 * a2)
 
 	add $t3, $t3, $t2	#a2 + b2
 	mul $t2, $t2, $t2	#a2 * a2
 
-	div $t5, $t2, $t3	#limit = (a2 * a2 / a2 + b2)
+	divu $t5, $t2, $t3	#limit = (a2 * a2 / a2 + b2)
 
 	move $t2, $zero	#x = 0
 	move $t3, $s7	#y = b
 
 loop:
-#Ustawianie kolor�w pikseli:
-#Ustaw kolor piksela 1
-sub $a0, $t0, $t2	# x0 - x
-sub $a1, $t1, $t3	# y0 - y
-add $a2, $a0, $zero	# *= 3 (bo po 3 piksele na jeden punkt)
-sll $a0, $a0, 1
-add $a0, $a0, $a2
-mul $a1, $a1, $s2	# *= wielko��_wiersza (bo przesuni�cie o ile�tam linii w d��)
-add $a0, $a0, $a1	# Obecna pozycja piksela
-add $a0, $a0, $s3	# Pozycja piksela wzgl�dem pocz�tku pliku (dodaj� do adresu pocz�tku pliku)
-li $v0, 0xff		#Kolor na czarny
-sb $v0, ($a0)		#Kolor niebieski
-sb $v0, 1($a0)		#Kolor zielony
-sb $v0, 2($a0)		#Kolor czerwony  (255,255,255)
+	sub $a0, $t0, $t2	#x0 - x
+	sub $a1, $t1, $t3	#y0 - y
+	add $a2, $a0, $zero	#3 pixels per one point
+	sll $a0, $a0, 1
+	add $a0, $a0, $a2
+	mul $a1, $a1, $s2	#Verse size
+	add $a0, $a0, $a1	#Current pixel position
+	add $a0, $a0, $s3	#Pixel position in file
+	li $v0, 0xf4
+	sb $v0, ($a0)
+	li $v0, 0x42
+	sb $v0, 1($a0)
+	li $v0, 0xa7
+	sb $v0, 2($a0)
 
-add $a0, $t0, $t2	# x0 - x
-sub $a1, $t1, $t3	# y0 - y
-add $a2, $a0, $zero	# *= 3 (bo po 3 piksele na jeden punkt)
-sll $a0, $a0, 1
-add $a0, $a0, $a2
-mul $a1, $a1, $s2	# *= wielko��_wiersza (bo przesuni�cie o ile�tam linii w d��)
-add $a0, $a0, $a1	# Obecna pozycja piksela
-add $a0, $a0, $s3	# Pozycja piksela wzgl�dem pocz�tku pliku (dodaj� do adresu pocz�tku pliku)
-li $v0, 0xff		#Kolor na czarny
-sb $v0, ($a0)		#Kolor niebieski
-sb $v0, 1($a0)		#Kolor zielony
-sb $v0, 2($a0)		#Kolor czerwony  (255,255,255)
+	add $a0, $t0, $t2	#x0 + x
+	sub $a1, $t1, $t3	#y0 - y
+	add $a2, $a0, $zero	#3 pixels per one point
+	sll $a0, $a0, 1
+	add $a0, $a0, $a2
+	mul $a1, $a1, $s2	#Verse size
+	add $a0, $a0, $a1	#Current pixel position
+	add $a0, $a0, $s3	#Pixel position in file
+	li $v0, 0xf4
+	sb $v0, ($a0)
+	li $v0, 0x42
+	sb $v0, 1($a0)
+	li $v0, 0xa7
+	sb $v0, 2($a0)
 
-sub $a0, $t0, $t2	# x0 - x
-add $a1, $t1, $t3	# y0 - y
-add $a2, $a0, $zero	# *= 3 (bo po 3 piksele na jeden punkt)
-sll $a0, $a0, 1
-add $a0, $a0, $a2
-mul $a1, $a1, $s2	# *= wielko��_wiersza (bo przesuni�cie o ile�tam linii w d��)
-add $a0, $a0, $a1	# Obecna pozycja piksela
-add $a0, $a0, $s3	# Pozycja piksela wzgl�dem pocz�tku pliku (dodaj� do adresu pocz�tku pliku)
-li $v0, 0xff		#Kolor na czarny
-sb $v0, ($a0)		#Kolor niebieski
-sb $v0, 1($a0)		#Kolor zielony
-sb $v0, 2($a0)		#Kolor czerwony  (255,255,255)
+	sub $a0, $t0, $t2	#x0 - x
+	add $a1, $t1, $t3	#y0 + y
+	add $a2, $a0, $zero	#3 pixels per one point
+	sll $a0, $a0, 1
+	add $a0, $a0, $a2
+	mul $a1, $a1, $s2	#Verse size
+	add $a0, $a0, $a1	#Current pixel position
+	add $a0, $a0, $s3	#Pixel position in file
+	li $v0, 0xf4
+	sb $v0, ($a0)
+	li $v0, 0x42
+	sb $v0, 1($a0)
+	li $v0, 0xa7
+	sb $v0, 2($a0)
 
-add $a0, $t0, $t2	# x0 - x
-add $a1, $t1, $t3	# y0 - y
-add $a2, $a0, $zero	# *= 3 (bo po 3 piksele na jeden punkt)
-sll $a0, $a0, 1
-add $a0, $a0, $a2
-mul $a1, $a1, $s2	# *= wielko��_wiersza (bo przesuni�cie o ile�tam linii w d��)
-add $a0, $a0, $a1	# Obecna pozycja piksela
-add $a0, $a0, $s3	# Pozycja piksela wzgl�dem pocz�tku pliku (dodaj� do adresu pocz�tku pliku)
-li $v0, 0xff		#Kolor na czarny
-sb $v0, ($a0)		#Kolor niebieski
-sb $v0, 1($a0)		#Kolor zielony
-sb $v0, 2($a0)		#Kolor czerwony  (255,255,255)
+	add $a0, $t0, $t2	#x0 + x
+	add $a1, $t1, $t3	#y0 + y
+	add $a2, $a0, $zero	#3 pixels per one point
+	sll $a0, $a0, 1
+	add $a0, $a0, $a2
+	mul $a1, $a1, $s2	#Verse size
+	add $a0, $a0, $a1	#Current pixel position
+	add $a0, $a0, $s3	#Pixel position in file
+	li $v0, 0xf4
+	sb $v0, ($a0)
+	li $v0, 0x42
+	sb $v0, 1($a0)
+	li $v0, 0xa7
+	sb $v0, 2($a0)
 
 #Bresenham's algorithm continue
 	mul $t4, $t2, $t2	#x * x
 	bge $t4, $t5, end	#if x * x >= limit
 
-	ble $t6, $zero
+	ble $t6, $zero,	d0	#d > 0
 
 	add $t6, $t6, $t8	#d += delta_B
 
