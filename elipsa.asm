@@ -54,7 +54,7 @@
 #Output with the excess
 	li $v0, 1
 	add $a0, $s2, $zero
-	syscall #PÓKI CO DZIA�?A
+	syscall #PÓKI CO DZIAŁA
 
 #Preparing the header
 	la $t0, header		#t0 is now 56bit
@@ -125,14 +125,13 @@
 	sub $t6, $t5, $t4	#4 * b2 - 4 * b * a2
 	add $t6, $t6, $t2	#d = 4 * b2 - 4 * b * a2 + $t2
 
-	mul $t7, $t5, 3	#delta_A = 12 * b2
+	sll $t7, $t5, 1
+	add $t7, $t7, $t5	#delta_A = 12 * b2
 
 	sll $t4, $t4, 1	#8 * b * a2
 	sub $t8, $t7, $t4
-	add $t8, $t8, $t2
-	add $t8, $t8, $t2
-	add $t8, $t8, $t2
-	add $t8, $t8, $t2	#delta_B = 4 * (3 * b2 - 2 * b * a2 + 2 * a2)
+	sll $t4, $t2, 3
+	add $t8, $t8, $t4	#delta_B = 4 * (3 * b2 - 2 * b * a2 + 2 * a2)
 
 	add $t3, $t3, $t2	#a2 + b2
 	mul $t2, $t2, $t2	#a2 * a2
