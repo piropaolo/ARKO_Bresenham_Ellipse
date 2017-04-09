@@ -118,9 +118,9 @@
 	mul $t2, $t0, $t0 #a2 = a * a
 	mul $t3, $t1, $t1 #b2 = b * b
 
-	sll $t4, $t2, 2	#4 * a2
-	sll $t5, $t3, 2	#4 * b2
-	mul $t4, $t4, $s7 #4 * b * a2
+	sll $t4, $t2, 2		#4 * a2
+	sll $t5, $t3, 2		#4 * b2
+	mul $t4, $t4, $s7	 #4 * b * a2
 
 	sub $t6, $t5, $t4	#4 * b2 - 4 * b * a2
 	add $t6, $t6, $t2	#d = 4 * b2 - 4 * b * a2 + $t2
@@ -128,15 +128,16 @@
 	sll $t7, $t5, 1
 	add $t7, $t7, $t5	#delta_A = 12 * b2
 
-	sll $t4, $t4, 1	#8 * b * a2
+	sll $t4, $t4, 1		#8 * b * a2
 	sub $t8, $t7, $t4
 	sll $t4, $t2, 3
 	add $t8, $t8, $t4	#delta_B = 4 * (3 * b2 - 2 * b * a2 + 2 * a2)
 
 	add $t3, $t3, $t2	#a2 + b2
-	mul $t2, $t2, $t2	#a2 * a2
+	mul $t2, $t2, $s6	#a2 * a2
 
 	divu $t5, $t2, $t3	#limit = (a2 * a2 / a2 + b2)
+	mul $t5, $t5, $s6
 
 	move $t2, $zero	#x = 0
 	move $t3, $s7	#y = b
@@ -204,7 +205,7 @@ loop:
 
 #Bresenham's algorithm continue
 	mul $t4, $t2, $t2	#x * x
-	bge $t4, $t5, end	#if x * x >= limit
+	bge $t4, $t5, second	#if x * x >= limit
 
 	ble $t6, $zero,	d0	#d > 0
 
@@ -236,6 +237,137 @@ d0:
 
 next:
 	b loop
+
+second:
+	move $t0, $s6	#x0
+	move $t1, $s7	#y0
+
+	move $v0, $s6
+	move $s6, $s7
+	move $s7, $v0
+
+	mul $t2, $s6, $s6 #a2 = a * a
+	mul $t3, $s7, $s7 #b2 = b * b
+
+	sll $t4, $t2, 2		#4 * a2
+	sll $t5, $t3, 2		#4 * b2
+	mul $t4, $t4, $s7	 #4 * b * a2
+
+	sub $t6, $t5, $t4	#4 * b2 - 4 * b * a2
+	add $t6, $t6, $t2	#d = 4 * b2 - 4 * b * a2 + $t2
+
+	sll $t7, $t5, 1
+	add $t7, $t7, $t5	#delta_A = 12 * b2
+
+	sll $t4, $t4, 1		#8 * b * a2
+	sub $t8, $t7, $t4
+	sll $t4, $t2, 3
+	add $t8, $t8, $t4	#delta_B = 4 * (3 * b2 - 2 * b * a2 + 2 * a2)
+
+	add $t3, $t3, $t2	#a2 + b2
+	mul $t2, $t2, $s6	#a2 * a2
+
+	divu $t5, $t2, $t3	#limit = (a2 * a2 / a2 + b2)
+	mul $t5, $t5, $s6
+
+	move $t2, $zero	#x = 0
+	move $t3, $s7	#y = b
+
+loop2:
+	sub $a0, $t0, $t3	#x0 - y
+	sub $a1, $t1, $t2	#y0 - x
+	add $a2, $a0, $zero	#3 pixels per one point
+	sll $a0, $a0, 1
+	add $a0, $a0, $a2
+	mul $a1, $a1, $s2	#Verse size
+	add $a0, $a0, $a1	#Current pixel position
+	add $a0, $a0, $s3	#Pixel position in file
+	li $v0, 0x62
+	sb $v0, ($a0)
+	li $v0, 0xf4
+	sb $v0, 1($a0)
+	li $v0, 0x42
+	sb $v0, 2($a0)
+
+	add $a0, $t0, $t3	#x0 + y
+	sub $a1, $t1, $t2	#y0 - x
+	add $a2, $a0, $zero	#3 pixels per one point
+	sll $a0, $a0, 1
+	add $a0, $a0, $a2
+	mul $a1, $a1, $s2	#Verse size
+	add $a0, $a0, $a1	#Current pixel position
+	add $a0, $a0, $s3	#Pixel position in file
+	li $v0, 0x62
+	sb $v0, ($a0)
+	li $v0, 0xf4
+	sb $v0, 1($a0)
+	li $v0, 0x42
+	sb $v0, 2($a0)
+
+	sub $a0, $t0, $t3	#x0 - y
+	add $a1, $t1, $t2	#y0 + x
+	add $a2, $a0, $zero	#3 pixels per one point
+	sll $a0, $a0, 1
+	add $a0, $a0, $a2
+	mul $a1, $a1, $s2	#Verse size
+	add $a0, $a0, $a1	#Current pixel position
+	add $a0, $a0, $s3	#Pixel position in file
+	li $v0, 0x62
+	sb $v0, ($a0)
+	li $v0, 0xf4
+	sb $v0, 1($a0)
+	li $v0, 0x42
+	sb $v0, 2($a0)
+
+	add $a0, $t0, $t3	#x0 + y
+	add $a1, $t1, $t2	#y0 + x
+	add $a2, $a0, $zero	#3 pixels per one point
+	sll $a0, $a0, 1
+	add $a0, $a0, $a2
+	mul $a1, $a1, $s2	#Verse size
+	add $a0, $a0, $a1	#Current pixel position
+	add $a0, $a0, $s3	#Pixel position in file
+	li $v0, 0x62
+	sb $v0, ($a0)
+	li $v0, 0xf4
+	sb $v0, 1($a0)
+	li $v0, 0x42
+	sb $v0, 2($a0)
+
+#Bresenham's algorithm continue
+	mul $t4, $t2, $t2	#x * x
+	bge $t4, $t5, end	#if x * x >= limit
+
+	ble $t6, $zero,	d02	#d > 0
+
+	add $t6, $t6, $t8	#d += delta_B
+
+	mul $a0, $s6, $s6	#a2 = a * a
+	sll $a0, $a0, 3	#8 * a2
+
+	mul $a1, $s7, $s7	#b2 = b * b
+	sll $a1, $a1, 3	#8 * b2
+
+	add $t7, $t7, $a1	#delta_A += 4 * 2 * b2
+	add $t8, $t8, $a0	#delta_B += 4 * (2 * b2 + 2 * a2)
+	add $t8, $t8, $a1
+
+	addi $t2, $t2, 1	#x += 1
+	addi $t3, $t3, -1	#y -= 1
+	b next2
+
+d02:
+	add $t6, $t6, $t7 #d += delta_A
+
+	mul $a1, $s7, $s7 #b2 = b * b
+	sll $a1, $a1, 3	#8 * b2
+
+	add $t7, $t7, $a1	#delta_A += 4 * 2 * b2
+	add $t8, $t8, $a1	#delta_B += 4 * 2 * b2
+	addi $t2, $t2, 1	#x += 1
+
+next2:
+	b loop2
 
 end: #JEST GIT
 #Save the rest of the file
