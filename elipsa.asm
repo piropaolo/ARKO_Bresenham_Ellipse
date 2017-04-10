@@ -142,6 +142,32 @@
 	move $t2, $zero	#x = 0
 	move $t3, $s7	#y = b
 
+	li $a3, 0x00
+	li $t4, 0x00
+background:
+	bge $a3, $s0, loopello
+	move $a0, $a3
+	move $a1, $t4
+	add $a2, $a0, $zero	#3 pixels per one point
+	sll $a0, $a0, 1
+	add $a0, $a0, $a2
+	mul $a1, $a1, $s2	#Verse size
+	add $a0, $a0, $a1	#Current pixel position
+	add $a0, $a0, $s3	#Pixel position in file
+	li $v0, 0xb9
+	sb $v0, ($a0)
+	li $v0, 0x42
+	sb $v0, 1($a0)
+	li $v0, 0xf4
+	sb $v0, 2($a0)
+	addi $a3, $a3, 1
+	b background
+loopello:
+	addi $t4, $t4, 1
+	li $a3, 0x00
+	bge $t4, $s1, loop
+	b background
+
 loop:
 	sub $a0, $t0, $t2	#x0 - x
 	sub $a1, $t1, $t3	#y0 - y
@@ -151,11 +177,11 @@ loop:
 	mul $a1, $a1, $s2	#Verse size
 	add $a0, $a0, $a1	#Current pixel position
 	add $a0, $a0, $s3	#Pixel position in file
-	li $v0, 0xf4
+	li $v0, 0x50
 	sb $v0, ($a0)
-	li $v0, 0x42
+	li $v0, 0xf4
 	sb $v0, 1($a0)
-	li $v0, 0xa7
+	li $v0, 0x41
 	sb $v0, 2($a0)
 
 	add $a0, $t0, $t2	#x0 + x
@@ -166,11 +192,11 @@ loop:
 	mul $a1, $a1, $s2	#Verse size
 	add $a0, $a0, $a1	#Current pixel position
 	add $a0, $a0, $s3	#Pixel position in file
-	li $v0, 0xf4
+	li $v0, 0x50
 	sb $v0, ($a0)
-	li $v0, 0x42
+	li $v0, 0xf4
 	sb $v0, 1($a0)
-	li $v0, 0xa7
+	li $v0, 0x41
 	sb $v0, 2($a0)
 
 	sub $a0, $t0, $t2	#x0 - x
@@ -181,11 +207,11 @@ loop:
 	mul $a1, $a1, $s2	#Verse size
 	add $a0, $a0, $a1	#Current pixel position
 	add $a0, $a0, $s3	#Pixel position in file
-	li $v0, 0xf4
+	li $v0, 0x50
 	sb $v0, ($a0)
-	li $v0, 0x42
+	li $v0, 0xf4
 	sb $v0, 1($a0)
-	li $v0, 0xa7
+	li $v0, 0x41
 	sb $v0, 2($a0)
 
 	add $a0, $t0, $t2	#x0 + x
@@ -196,11 +222,11 @@ loop:
 	mul $a1, $a1, $s2	#Verse size
 	add $a0, $a0, $a1	#Current pixel position
 	add $a0, $a0, $s3	#Pixel position in file
-	li $v0, 0xf4
+	li $v0, 0x50
 	sb $v0, ($a0)
-	li $v0, 0x42
+	li $v0, 0xf4
 	sb $v0, 1($a0)
-	li $v0, 0xa7
+	li $v0, 0x41
 	sb $v0, 2($a0)
 
 #Bresenham's algorithm continue
@@ -282,11 +308,11 @@ loop2:
 	mul $a1, $a1, $s2	#Verse size
 	add $a0, $a0, $a1	#Current pixel position
 	add $a0, $a0, $s3	#Pixel position in file
-	li $v0, 0x62
-	sb $v0, ($a0)
-	li $v0, 0xf4
-	sb $v0, 1($a0)
 	li $v0, 0x42
+	sb $v0, ($a0)
+	li $v0, 0xee
+	sb $v0, 1($a0)
+	li $v0, 0xf4
 	sb $v0, 2($a0)
 
 	add $a0, $t0, $t3	#x0 + y
@@ -297,11 +323,11 @@ loop2:
 	mul $a1, $a1, $s2	#Verse size
 	add $a0, $a0, $a1	#Current pixel position
 	add $a0, $a0, $s3	#Pixel position in file
-	li $v0, 0x62
-	sb $v0, ($a0)
-	li $v0, 0xf4
-	sb $v0, 1($a0)
 	li $v0, 0x42
+	sb $v0, ($a0)
+	li $v0, 0xee
+	sb $v0, 1($a0)
+	li $v0, 0xf4
 	sb $v0, 2($a0)
 
 	sub $a0, $t0, $t3	#x0 - y
@@ -312,11 +338,11 @@ loop2:
 	mul $a1, $a1, $s2	#Verse size
 	add $a0, $a0, $a1	#Current pixel position
 	add $a0, $a0, $s3	#Pixel position in file
-	li $v0, 0x62
-	sb $v0, ($a0)
-	li $v0, 0xf4
-	sb $v0, 1($a0)
 	li $v0, 0x42
+	sb $v0, ($a0)
+	li $v0, 0xee
+	sb $v0, 1($a0)
+	li $v0, 0xf4
 	sb $v0, 2($a0)
 
 	add $a0, $t0, $t3	#x0 + y
@@ -327,11 +353,11 @@ loop2:
 	mul $a1, $a1, $s2	#Verse size
 	add $a0, $a0, $a1	#Current pixel position
 	add $a0, $a0, $s3	#Pixel position in file
-	li $v0, 0x62
-	sb $v0, ($a0)
-	li $v0, 0xf4
-	sb $v0, 1($a0)
 	li $v0, 0x42
+	sb $v0, ($a0)
+	li $v0, 0xee
+	sb $v0, 1($a0)
+	li $v0, 0xf4
 	sb $v0, 2($a0)
 
 #Bresenham's algorithm continue
@@ -377,7 +403,7 @@ end: #JEST GIT
 	add $a2, $s5, $zero	#Number of characters to write
 	syscall
 
-#Zamknij plik
+#Close file
 	li $v0, 16
 	add $a0, $s4, $zero	#Copying file pointer
 	syscall
